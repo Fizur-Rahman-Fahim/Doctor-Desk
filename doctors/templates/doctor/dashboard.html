@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-5">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="fw-bold text-primary">👨‍⚕️ Welcome, Dr. {{ user.get_full_name }}</h2>
+      <div>
+        <a href="{% url 'doctor_profile' %}" class="btn btn-outline-primary me-2">👤 My Profile</a>
+
+        <a href="{% url 'add_patient' %}" class="btn btn-success">➕ Add Patient</a>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <form method="get" action="{% url 'patient_search' %}" class="input-group mb-4">
+      <input type="text" name="q" class="form-control" placeholder="🔍 Search Patients..." value="{{ request.GET.q }}" />
+      <button class="btn btn-outline-secondary" type="submit">Search</button>
+    </form>
+
+    <!-- Patients Card -->
+    <div class="card shadow-sm mb-4 border-0">
+      <div class="card-header bg-info text-white d-flex justify-content-between">
+        <h5 class="mb-0">🧑‍🤝‍🧑 Patient List</h5>
+        <a href="{% url 'patient_list' %}" class="btn btn-light btn-sm">View All</a>
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for patient in patients %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{{ patient.name }}</strong> (Age: {{ patient.age }})<br />
+              <small class="text-muted">{{ patient.phone }}</small>
+            </div>
+            <div>
+              <a href="{% url 'patient_profile' patient.id %}" class="btn btn-sm btn-outline-primary me-2">Profile</a>
+              <a href="{% url 'patient_detail' patient.id %}" class="btn btn-sm btn-outline-warning me-2">Edit</a>
+              <a href="{% url 'delete_patient' patient.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this patient?')">Delete</a>
+            </div>
+          </li>
+        {% empty %}
+          <li class="list-group-item text-muted">No patients available.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    {% comment %} <!-- Prescriptions Card -->
+    <div class="card shadow-sm mb-4 border-0">
+      <div class="card-header bg-success text-white d-flex justify-content-between">
+        <h5 class="mb-0">💊 Recent Prescriptions</h5>
+        <a href="{% url 'upload_prescription' patient.id %}" class="btn btn-light btn-sm">➕ Add Prescription</a>
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for pres in prescriptions %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{{ pres.patient.name }}</strong><br />
+              <small class="text-muted">{{ pres.created_at|date:'d M, Y - h:i A' }}</small>
+            </div>
+            <div>
+              <a href="{% url 'prescription_list' pres.patient.id %}" class="btn btn-sm btn-outline-success me-2">View All</a>
+              <a href="{% url 'edit_prescription' pres.id %}" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
+              <a href="{% url 'delete_prescription' pres.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this prescription?')">Delete</a>
+            </div>
+          </li>
+        {% empty %}
+          <li class="list-group-item text-muted">No prescriptions found.</li>
+        {% endfor %}
+      </ul>
+    </div> {% endcomment %}
+
+    <!-- Reports Card -->
+    {% comment %} <div class="card shadow-sm mb-5 border-0">
+      <div class="card-header bg-dark text-white d-flex justify-content-between">
+        <h5 class="mb-0">📄 Recent Reports</h5>
+        <a href="{% url 'upload_report' %}" class="btn btn-light btn-sm">➕ Upload Report</a>
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for report in reports %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{{ report.patient.name }}</strong><br />
+              <small class="text-muted">{{ report.created_at|date:'d M, Y - h:i A' }}</small>
+            </div>
+            <div>
+              <a href="{% url 'report_list' report.patient.id %}" class="btn btn-sm btn-outline-success me-2">View All</a>
+              <a href="{% url 'edit_report' report.id %}" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
+              <a href="{% url 'delete_report' report.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this report?')">Delete</a>
+            </div>
+          </li>
+        {% empty %}
+          <li class="list-group-item text-muted">No reports uploaded.</li>
+        {% endfor %}
+      </ul>
+    </div> {% endcomment %}
+  </div>
+{% endblock %}

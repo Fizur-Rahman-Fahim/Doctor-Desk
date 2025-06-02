@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow border-danger">
+          <div class="card-header bg-danger text-white">
+            <h4 class="mb-0"><i class="fas fa-trash-alt"></i> Confirm Delete</h4>
+          </div>
+          <div class="card-body">
+            <p class="fs-5">
+              Are you sure you want to delete the medical record <strong>"{{ record.record_type }}"</strong> for <strong>{{ record.patient.name }}</strong>?
+            </p>
+
+            <form method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger"><i class="fas fa-check"></i> Yes, Delete</button>
+              <a href="{% url 'patient_profile' record.patient.id %}" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

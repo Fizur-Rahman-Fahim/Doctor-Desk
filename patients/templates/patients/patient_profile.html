@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2 class="mb-4">{{ patient.name }}'s Profile</h2>
+
+    <!-- Basic Info Card -->
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">Basic Info</div>
+      <div class="card-body">
+        <p>
+          <strong>Age:</strong> {{ patient.age }}
+        </p>
+        <p>
+          <strong>Gender:</strong> {{ patient.get_gender_display }}
+        </p>
+        <p>
+          <strong>Address:</strong> {{ patient.address }}
+        </p>
+        <p>
+          <strong>Occupation:</strong> {{ patient.occupation }}
+        </p>
+        <p>
+          <strong>Phone:</strong> {{ patient.phone }}
+        </p>
+        <p>
+          <strong>Email:</strong> {{ patient.email }}
+        </p>
+        <p>
+          <strong>Medical History:</strong> {{ patient.medical_history }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Prescriptions Section -->
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h4>Prescriptions</h4>
+      <a href="{% url 'upload_prescription' patient.id %}" class="btn btn-sm btn-success">+ Add Prescription</a>
+    </div>
+    {% for prescription in prescriptions %}
+      <div class="card mb-3">
+        <div class="card-body">
+          <p>
+            <strong>Date:</strong> {{ prescription.date }}
+          </p>
+          <p>
+            <strong>Diagnosis:</strong> {{ prescription.diagnosis }}
+          </p>
+          <p>
+            <strong>Medications:</strong> {{ prescription.medications }}
+          </p>
+          <p>
+            <strong>Advice:</strong> {{ prescription.advice }}
+          </p>
+          <a href="{% url 'edit_prescription' prescription.id %}" class="btn btn-sm btn-warning">Edit</a>
+          <a href="{% url 'delete_prescription' prescription.id %}" class="btn btn-sm btn-danger">Delete</a>
+        </div>
+      </div>
+    {% empty %}
+      <p>No prescriptions available.</p>
+    {% endfor %}
+
+    <!-- Reports Section -->
+    <div class="d-flex justify-content-between align-items-center mb-2 mt-4">
+      <h4>Reports</h4>
+      <a href="{% url 'upload_report' patient.id %}" class="btn btn-sm btn-success">+ Upload Report</a>
+    </div>
+    {% for report in reports %}
+      <div class="card mb-3">
+        <div class="card-body">
+          <p>
+            <strong>Title:</strong> {{ report.title }}
+          </p>
+          <p>
+            <a href="{{ report.file.url }}" class="btn btn-sm btn-success" target="_blank">Download</a> ({{ report.uploaded_at|date:'Y-m-d' }})
+          </p>
+          <a href="{% url 'edit_report' report.id %}" class="btn btn-sm btn-warning">Edit</a>
+          <a href="{% url 'delete_report' report.id %}" class="btn btn-sm btn-danger">Delete</a>
+        </div>
+      </div>
+    {% empty %}
+      <p>No reports available.</p>
+    {% endfor %}
+
+    <!-- Other Medical Records Section -->
+    <div class="d-flex justify-content-between align-items-center mb-2 mt-4">
+      <h4>Other Medical Records</h4>
+      <a href="{% url 'upload_record' patient.id %}" class="btn btn-sm btn-success">+ Upload Record</a>
+    </div>
+    {% for record in medical_records %}
+      <div class="card mb-3">
+        <div class="card-body">
+          <p>
+            <strong>Type:</strong> {{ record.get_record_type_display }}
+          </p>
+          <p>
+            <a href="{{ record.file.url }}" class="btn btn-sm btn-success" target="_blank">Download</a> ({{ record.uploaded_at|date:'Y-m-d' }})
+          </p>
+          <a href="{% url 'edit_medical_record' record.id %}" class="btn btn-sm btn-warning">Edit</a>
+          <a href="{% url 'delete_medical_record' record.id %}" class="btn btn-sm btn-danger">Delete</a>
+        </div>
+      </div>
+    {% empty %}
+      <p>No additional medical records.</p>
+    {% endfor %}
+  </div>
+{% endblock %}

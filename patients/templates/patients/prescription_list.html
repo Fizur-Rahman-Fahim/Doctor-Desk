@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container my-4">
+    <h2 class="mb-4 text-center">Prescriptions for {{ patient.name }}</h2>
+
+    {% if prescriptions %}
+      <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% for prescription in prescriptions %}
+          <div class="col">
+            <div class="card shadow-sm border-0 h-100">
+              <div class="card-body">
+                <!-- Diagnosis -->
+                <div class="mb-3 p-3 rounded" style="background-color: #f0f8ff;">
+                  <h5 class="card-title text-primary mb-1"><i class="fas fa-notes-medical"></i> Diagnosis</h5>
+                  <p class="mb-0">{{ prescription.diagnosis }}</p>
+                </div>
+
+                <!-- Medications -->
+                <div class="mb-3 p-3 rounded" style="background-color: #f5f5f5;">
+                  <h6 class="text-muted mb-1"><i class="fas fa-pills"></i> Medications</h6>
+                  <p class="mb-0">{{ prescription.medications }}</p>
+                </div>
+
+                <!-- Advice -->
+                <div class="mb-3 p-3 rounded" style="background-color: #fff8dc;">
+                  <h6 class="text-muted mb-1"><i class="fas fa-stethoscope"></i> Advice</h6>
+                  <p class="mb-0">{{ prescription.advice }}</p>
+                </div>
+
+                <!-- Date & Doctor Info -->
+                <p class="text-muted small mt-3 mb-1">
+                  <i class="fas fa-calendar-alt"></i> {{ prescription.date }}
+                </p>
+                <p class="text-muted small mb-3">
+                  <i class="fas fa-user-md"></i> Dr. {{ prescription.doctor.get_full_name|default:prescription.doctor.username }}
+                </p>
+
+                <!-- Buttons -->
+                <a href="{% url 'edit_prescription' prescription.pk %}" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-edit"></i> Edit</a>
+                <a href="{% url 'delete_prescription' prescription.pk %}" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i> Delete</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-warning text-center" role="alert">
+        <i class="fas fa-info-circle"></i> No prescriptions found.
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

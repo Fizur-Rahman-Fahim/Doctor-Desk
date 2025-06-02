@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow-lg border-0">
+          <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="fas fa-edit"></i> Edit Medical Report</h4>
+          </div>
+          <div class="card-body bg-light">
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <!-- Render fields with better styling -->
+              <div class="mb-3">
+                <label for="title" class="form-label"><i class="fas fa-heading"></i> Report Title</label>
+                {{ form.title|add_class:'form-control bg-white' }}
+              </div>
+
+              <div class="mb-3">
+                <label for="file" class="form-label"><i class="fas fa-file-upload"></i> Replace File</label>
+                {{ form.file|add_class:'form-control bg-white' }}
+                <small class="form-text text-muted">Leave empty to keep existing file.</small>
+              </div>
+
+              <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Update Report</button>
+              <a href="{% url 'patient_profile' report.patient.id %}" class="btn btn-secondary"><i class="fas fa-times-circle"></i> Cancel</a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container my-4">
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">👤 Patient Profile: {{ patient.name }}</h4>
+      </div>
+      <div class="card-body">
+        <p>
+          <strong>Age:</strong> {{ patient.age }}
+        </p>
+        <p>
+          <strong>Gender:</strong> {{ patient.get_gender_display }}
+        </p>
+        <p>
+          <strong>Address:</strong> {{ patient.address }}
+        </p>
+        <p>
+          <strong>Occupation:</strong> {{ patient.occupation }}
+        </p>
+        <p>
+          <strong>Phone:</strong> {{ patient.phone }}
+        </p>
+        <p>
+          <strong>Email:</strong> {{ patient.email }}
+        </p>
+        <p>
+          <strong>Medical History:</strong> {{ patient.medical_history }}
+        </p>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between mb-3">
+      <a href="{% url 'upload_prescription' patient.id %}" class="btn btn-success">➕ Add Prescription</a>
+      <a href="{% url 'upload_report' patient.id %}" class="btn btn-info">📤 Upload Report</a>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">💊 Prescriptions</h5>
+        <span class="badge bg-light text-dark">{{ prescriptions|length }} Total</span>
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for prescription in prescriptions %}
+          <li class="list-group-item">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <strong class="text-primary">{{ prescription.created_at|date:'d M, Y - h:i A' }}</strong>
+                <p class="mb-1">
+                  <span class="text-muted">🩺 Diagnosis:</span> {{ prescription.diagnosis }}
+                </p>
+              </div>
+              {% comment %} <a href="{% url 'prescription_detail' prescription.id %}" class="btn btn-outline-success btn-sm">🔍 View</a> {% endcomment %}
+              <a href="#" class="btn btn-outline-success btn-sm">🔍 View</a>
+            </div>
+          </li>
+        {% empty %}
+          <li class="list-group-item text-center text-muted">No prescriptions available.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">🧾 Reports</h5>
+        <span class="badge bg-light text-dark">{{ reports|length }} Files</span>
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for report in reports %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{{ report.title }}</strong><br />
+              <small class="text-muted">Uploaded on {{ report.created_at|date:'d M, Y - h:i A' }}</small>
+            </div>
+            <a href="{{ report.file.url }}" target="_blank" class="btn btn-sm btn-outline-info">📥 Download</a>
+          </li>
+        {% empty %}
+          <li class="list-group-item text-muted text-center">No reports uploaded yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">📁 Medical Records</h5>
+        {% comment %} <a href="{% url 'upload_medical_record' patient.id %}" class="btn btn-light btn-sm">⬆️ Upload Record</a> {% endcomment %}
+        <a href="{% url 'upload_record' patient.id %}" class="btn btn-light btn-sm">⬆️ Upload Record</a>
+      </div>
+
+      <ul class="list-group list-group-flush">
+        {% for record in medical_records %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <strong class="text-dark">{{ record.record_type }}</strong><br />
+              <small class="text-muted">🕒 {{ record.created_at|date:'d M, Y - h:i A' }}</small>
+            </div>
+            <a href="{{ record.file.url }}" class="btn btn-outline-primary btn-sm" target="_blank">📥 Download</a>
+          </li>
+        {% empty %}
+          <li class="list-group-item text-center text-muted">No medical records available.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endblock %}

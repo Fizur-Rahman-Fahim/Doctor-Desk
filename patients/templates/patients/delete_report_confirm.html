@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h3 class="text-danger mb-3"><i class="fas fa-exclamation-triangle"></i> Confirm Delete</h3>
+        <p class="lead">Are you sure you want to delete the report titled:</p>
+        <p class="fw-bold text-dark border p-2 bg-light rounded">"{{ report.title }}"</p>
+
+        <form method="post" class="mt-4 d-flex gap-2">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Yes, Delete</button>
+          <a href="{% url 'report_list' report.patient.id %}" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

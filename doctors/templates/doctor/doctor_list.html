@@ -1,0 +1,44 @@
+<!-- templates/doctor/doctor_list.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Doctor List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  </head>
+  <body class="container py-4">
+    <h2 class="mb-4">Doctors</h2>
+    <a href="{% url 'doctor_add' %}" class="btn btn-primary mb-3">➕ Add New Doctor</a>
+
+    <table class="table table-bordered table-striped">
+      <thead class="table-dark">
+        <tr>
+          <th>Name</th>
+          <th>Specialization</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Gender</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for doctor in doctors %}
+          <tr>
+            <td>{{ doctor.full_name }}</td>
+            <td>{{ doctor.specialization }}</td>
+            <td>{{ doctor.email }}</td>
+            <td>{{ doctor.phone }}</td>
+            <td>{{ doctor.gender }}</td>
+            <td>
+              <a href="{% url 'doctor_edit' doctor.pk %}" class="btn btn-sm btn-warning">Edit</a>
+              <a href="{% url 'doctor_delete' doctor.pk %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="text-center">No doctors found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+  <style>
+    body {
+      background: linear-gradient(to right, #2c3e50, #3498db);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .card {
+      background-color: white;
+      border: none;
+      border-radius: 15px;
+    }
+    
+    .form-control:focus {
+      box-shadow: none;
+      border-color: #3498db;
+    }
+    
+    .btn-primary {
+      background-color: #3498db;
+      border: none;
+    }
+    
+    .btn-primary:hover {
+      background-color: #2980b9;
+    }
+    
+    .form-label {
+      font-weight: 500;
+      color: #2c3e50;
+    }
+  </style>
+
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <div class="card shadow-lg p-4">
+          <h3 class="text-center mb-4 text-primary">🩺 Doctor Registration</h3>
+
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} text-center">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+
+          <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+              <div class="mb-3">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field|add_class:'form-control' }}
+                {% if field.errors %}
+                  <div class="text-danger small">{{ field.errors|striptags }}</div>
+                {% endif %}
+              </div>
+            {% endfor %}
+
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-primary py-2 fw-bold">Register</button>
+            </div>
+          </form>
+
+          <p class="text-center mt-3">
+            Already registered? <a href="{% url 'doctor_login' %}" class="text-decoration-none text-primary fw-semibold">Login here</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
