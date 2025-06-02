@@ -1,0 +1,11 @@
+Django
+gunicorn
+psycopg2-binary
+dj-database-url
+whitenoise
+python-dotenv
+django-crispy-forms
+crispy-bootstrap5
+django-widget-tweaks
+djangorestframework
+drf-yasg
