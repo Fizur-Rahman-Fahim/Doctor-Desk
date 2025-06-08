@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = ['https://doctor-desk-eight.vercel.app/', 'doctor-desk-eight.vercel.app', 'localhost', '127.0.0.1', 'doctor-desk-hb2sdnr9b-fizur-rahman-fahims-projects.vercel.app']
+ALLOWED_HOSTS = ['https://doctor-desk-eight.vercel.app/', 'doctor-desk-eight.vercel.app', 'localhost', '127.0.0.1']
 
 
 # Application definition
