@@ -92,8 +92,12 @@ WSGI_APPLICATION = 'doctor_desk.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),  # Database name
+        'USER': os.getenv('DB_USER'),  # Database user
+        'PASSWORD': os.getenv('DB_PASSWORD'),  # Database password
+        'HOST': os.getenv('DB_HOST', 'localhost'),  # Database host, default is localhost
+        'PORT': os.getenv('DB_PORT', '5432'),  # Database port, default is 5432
     }
 }
 
