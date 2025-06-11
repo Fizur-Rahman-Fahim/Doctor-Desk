@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'widget_tweaks', # For form tweaks in templates
     'crispy_forms', # For better form rendering
     'crispy_bootstrap5', # For Bootstrap 5 support in crispy_forms
+    'storages', # For handling static and media files in cloud storage
 ]
 
 
@@ -152,3 +153,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Media files (for file uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# Supabase-compatible config (uses S3 protocol under the hood)
+AWS_ACCESS_KEY_ID = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3ZXh3aGRnZ3hsbGJrZXJ5a2xrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk0MDYxMDIsImV4cCI6MjA2NDk4MjEwMn0.LxFNH-mXnCTuboCC6IUuTjKAPrSI7AzZFeAmX41lce0' # Supabase public anon key
+AWS_SECRET_ACCESS_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3ZXh3aGRnZ3hsbGJrZXJ5a2xrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0OTQwNjEwMiwiZXhwIjoyMDY0OTgyMTAyfQ.C_Ni2gEa_NGZlnSkakdvASVEzlwdBcjzRxeVCQw2NMA' # Supabase service role key
+AWS_STORAGE_BUCKET_NAME = 'reports' # Supabase bucket name
+AWS_S3_ENDPOINT_URL = 'https://kwexwhdggxllbkeryklk.supabase.co/storage/v1'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
