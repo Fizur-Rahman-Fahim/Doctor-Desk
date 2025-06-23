@@ -46,55 +46,6 @@
 ```bash
 git clone https://github.com/your-username/Doctor-Desk.git
 cd Doctor-Desk
-# 🩺 Doctor Desk
-
-**Doctor Desk** is a modern, full-featured medical record management system built with Django. It allows doctors to manage patients, prescriptions, medical reports, and health records with ease — all in one secure platform.
-
-🔗 **Live Demo**: [doctor-desk-okum.onrender.com](https://doctor-desk-okum.onrender.com/)
-
----
-
-## 🚀 Features
-
-- ✅ Secure doctor login and dashboard
-- 👥 Patient management with profile, contact info, and visit history
-- 💊 Prescription creation, editing, and tracking
-- 📁 Upload & manage medical reports and records
-- 🔍 Patient search by name, phone, email, gender, etc.
-- 📊 Organized, clean UI with Bootstrap 5 and Font Awesome
-- 🗃️ PostgreSQL/MySQL compatible (Production-ready)
-- ☁️ Deployed on Render | Can be deployed on Vercel, Heroku, etc.
-
----
-
-## 🛠️ Tech Stack
-
-- **Backend**: Django 5.x
-- **Database**: PostgreSQL / Supabase / MySQL
-- **Frontend**: HTML, CSS, Bootstrap 5, Font Awesome
-- **Authentication**: Django auth system
-- **Storage**: Media & static handling via Whitenoise / Supabase
-- **Deployment**: Render (Live) | Optional: Vercel + Supabase
-
----
-
-## 📷 Screenshots
-
-> (Optional) Add screenshots of:
-- Patient list
-- Prescription form
-- Report upload
-- Profile page, etc.
-
----
-
-## 🧑‍💻 Getting Started (Local Setup)
-
-### 1️⃣ Clone the Repository
-
-```bash
-git clone https://github.com/your-username/Doctor-Desk.git
-cd Doctor-Desk
 ```
 
 ### 2️⃣ Set Up Virtual Environment
