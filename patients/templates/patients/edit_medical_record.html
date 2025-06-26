@@ -20,13 +20,13 @@
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border-top: 4px solid #f59e0b;
+    border-top: 4px solid #3b82f6; /* Blue top border */
   }
 
   .edit-header {
-    background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
     padding: 1.5rem;
-    color: #92400e;
+    color: white;
   }
 
   .edit-title {
@@ -43,67 +43,54 @@
 
   .edit-body {
     padding: 2rem;
-    background-color: #fff;
+    background-color: #f8fafc;
   }
 
   .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.8rem;
   }
 
   .form-label {
     font-weight: 600;
     color: #1e293b;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.6rem;
     display: flex;
     align-items: center;
     gap: 10px;
   }
 
   .form-icon {
-    color: #f59e0b;
+    color: #3b82f6;
     font-size: 1.1rem;
+    min-width: 20px;
   }
 
   .form-control {
     border: 1px solid #e2e8f0;
     border-radius: 8px;
-    padding: 0.8rem 1rem;
+    padding: 0.9rem 1.2rem;
     transition: all 0.3s ease;
-    background-color: #f8fafc;
+    background-color: white;
   }
 
   .form-control:focus {
-    border-color: #f59e0b;
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
-    background-color: #fff;
-  }
-
-  .file-input {
-    position: relative;
-  }
-
-  .file-input::after {
-    content: "Choose file...";
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #64748b;
-    pointer-events: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
 
   .form-actions {
     display: flex;
+    justify-content: flex-end;
     gap: 1rem;
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     padding-top: 1.5rem;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid #e2e8f0;
   }
 
   .btn-save {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     border: none;
-    padding: 0.8rem 2rem;
+    padding: 0.9rem 2.2rem;
     border-radius: 8px;
     font-weight: 600;
     color: white;
@@ -123,7 +110,7 @@
     background-color: white;
     border: 1px solid #e2e8f0;
     color: #64748b;
-    padding: 0.8rem 2rem;
+    padding: 0.9rem 2rem;
     border-radius: 8px;
     font-weight: 600;
     transition: all 0.3s ease;
@@ -139,11 +126,17 @@
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   }
 
-  @media (max-width: 576px) {
+  small.text-muted {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    display: block;
+  }
+
+  @media (max-width: 768px) {
     .form-actions {
       flex-direction: column;
     }
-    
+
     .btn-save, .btn-cancel {
       width: 100%;
       justify-content: center;
@@ -160,13 +153,13 @@
       </h4>
     </div>
     <div class="edit-body">
-      <form method="post" enctype="multipart/form-data">
+      <form method="post" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
 
         <div class="form-group">
           <label for="{{ form.record_type.id_for_label }}" class="form-label">
             <i class="fas fa-file-medical form-icon"></i>
-            Record Type
+            {{ form.record_type.label }}
           </label>
           {% render_field form.record_type class='form-control' %}
         </div>
@@ -174,22 +167,18 @@
         <div class="form-group">
           <label for="{{ form.file.id_for_label }}" class="form-label">
             <i class="fas fa-upload form-icon"></i>
-            Upload New File
+            {{ form.file.label }}
           </label>
-          <div class="file-input">
-            {% render_field form.file class='form-control' %}
-          </div>
+          {% render_field form.file class='form-control' %}
           <small class="text-muted">Accepted formats: PDF, JPG, PNG (Max 5MB)</small>
         </div>
 
         <div class="form-actions">
           <button type="submit" class="btn btn-save">
-            <i class="fas fa-save"></i>
-            Update Record
+            <i class="fas fa-save"></i> Update Record
           </button>
           <a href="{% url 'patient_profile' medical_record.patient.id %}" class="btn btn-cancel">
-            <i class="fas fa-arrow-left"></i>
-            Cancel
+            <i class="fas fa-arrow-left"></i> Cancel
           </a>
         </div>
       </form>
@@ -198,8 +187,7 @@
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Add animation to form elements
+  document.addEventListener('DOMContentLoaded', function () {
     const formGroups = document.querySelectorAll('.form-group');
     formGroups.forEach((group, index) => {
       group.style.opacity = '0';
