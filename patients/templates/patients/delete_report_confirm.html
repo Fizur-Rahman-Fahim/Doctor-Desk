@@ -2,19 +2,189 @@
 {% load static %}
 
 {% block content %}
-  <div class="container mt-5">
-    <div class="card shadow-sm border-0">
-      <div class="card-body">
-        <h3 class="text-danger mb-3"><i class="fas fa-exclamation-triangle"></i> Confirm Delete</h3>
-        <p class="lead">Are you sure you want to delete the report titled:</p>
-        <p class="fw-bold text-dark border p-2 bg-light rounded">"{{ report.title }}"</p>
+<style>
+  .delete-container {
+    max-width: 600px;
+    margin: 3rem auto;
+    animation: fadeIn 0.4s ease-out;
+  }
 
-        <form method="post" class="mt-4 d-flex gap-2">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Yes, Delete</button>
-          <a href="{% url 'report_list' report.patient.id %}" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
-        </form>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .delete-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #ef4444;
+    background: linear-gradient(to bottom, #fff 0%, #fef2f2 100%);
+  }
+
+  .delete-header {
+    padding: 1.5rem 1.5rem 0;
+  }
+
+  .delete-title {
+    font-weight: 700;
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .delete-icon {
+    font-size: 1.5rem;
+  }
+
+  .delete-body {
+    padding: 1.5rem;
+  }
+
+  .delete-message {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #4b5563;
+    margin-bottom: 1.5rem;
+  }
+
+  .report-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #111827;
+    background-color: #fee2e2;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 3px solid #ef4444;
+    margin: 1.5rem 0;
+  }
+
+  .warning-alert {
+    background-color: #fee2e2;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #b91c1c;
+    font-weight: 500;
+  }
+
+  .delete-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .btn-delete {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border: none;
+    padding: 0.8rem 1.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+  }
+
+  .btn-cancel {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    color: #4b5563;
+    padding: 0.8rem 1.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .btn-cancel:hover {
+    background-color: #f3f4f6;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 576px) {
+    .delete-actions {
+      flex-direction: column;
+    }
+    
+    .btn-delete, .btn-cancel {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+
+<div class="delete-container">
+  <div class="delete-card">
+    <div class="delete-header">
+      <h3 class="delete-title">
+        <i class="fas fa-exclamation-triangle delete-icon"></i>
+        Delete Medical Report
+      </h3>
+    </div>
+    <div class="delete-body">
+      <p class="delete-message">
+        You are about to permanently delete this medical report:
+      </p>
+      
+      <div class="report-title">
+        "{{ report.title }}"
       </div>
+
+      <div class="warning-alert">
+        <i class="fas fa-exclamation-circle"></i>
+        <span>This action cannot be undone. All data will be permanently lost.</span>
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="delete-actions">
+          <button type="submit" class="btn btn-delete">
+            <i class="fas fa-trash-alt"></i>
+            Delete Report
+          </button>
+          <a href="{% url 'report_list' report.patient.id %}" class="btn btn-cancel">
+            <i class="fas fa-times"></i>
+            Cancel
+          </a>
+        </div>
+      </form>
     </div>
   </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add slight animation to buttons
+    const buttons = document.querySelectorAll('.btn-delete, .btn-cancel');
+    buttons.forEach((button, index) => {
+      button.style.opacity = '0';
+      button.style.transform = 'translateY(10px)';
+      setTimeout(() => {
+        button.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        button.style.opacity = '1';
+        button.style.transform = 'translateY(0)';
+      }, 200 + (index * 100));
+    });
+  });
+</script>
 {% endblock %}
