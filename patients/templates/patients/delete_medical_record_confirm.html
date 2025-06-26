@@ -2,31 +2,190 @@
 {% load static %}
 
 {% block content %}
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card border-danger shadow">
-          <div class="card-header bg-danger text-white text-center">
-            <h4 class="mb-0">
-              <i class="fas fa-exclamation-triangle me-2"></i>
-              Confirm Deletion
-            </h4>
-          </div>
-          <div class="card-body text-center">
-            <p class="fs-5 mb-4">
-              Are you sure you want to delete the medical record <br />
-              <strong>"{{ record.record_type }}"</strong> for <strong>{{ record.patient.name }}</strong>?
-            </p>
+<style>
+  .delete-confirmation {
+    max-width: 600px;
+    margin: 2rem auto;
+    animation: fadeInUp 0.4s ease-out;
+  }
 
-            <form method="post" class="d-inline-block me-2">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt me-1"></i> Yes, Delete</button>
-            </form>
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-            <a href="{% url 'patient_profile' record.patient.id %}" class="btn btn-secondary"><i class="fas fa-times-circle me-1"></i> Cancel</a>
-          </div>
+  .delete-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #ef4444;
+  }
+
+  .delete-header {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    padding: 1.5rem;
+    text-align: center;
+    color: white;
+    position: relative;
+  }
+
+  .delete-header::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z' fill='%23fef2f2'/%3E%3Cpath d='M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z' fill='%23fee2e2'/%3E%3C/svg%3E");
+    background-size: cover;
+  }
+
+  .delete-title {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .delete-body {
+    padding: 2rem;
+    background-color: #fef2f2;
+    text-align: center;
+  }
+
+  .delete-message {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #4b5563;
+    margin-bottom: 2rem;
+  }
+
+  .record-type {
+    color: #111827;
+    font-weight: 600;
+    background-color: #fee2e2;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  .patient-name {
+    color: #111827;
+    font-weight: 600;
+  }
+
+  .delete-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+
+  .btn-delete {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border: none;
+    padding: 0.7rem 1.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+  }
+
+  .btn-cancel {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    color: #4b5563;
+    padding: 0.7rem 1.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-cancel:hover {
+    background-color: #f3f4f6;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 576px) {
+    .delete-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .btn-delete, .btn-cancel {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+
+<div class="delete-confirmation">
+  <div class="delete-card">
+    <div class="delete-header">
+      <h4 class="delete-title">
+        <i class="fas fa-exclamation-triangle"></i>
+        Confirm Record Deletion
+      </h4>
+    </div>
+    <div class="delete-body">
+      <p class="delete-message">
+        You are about to permanently delete the medical record:<br>
+        <span class="record-type">{{ record.record_type }}</span><br>
+        for patient <span class="patient-name">{{ record.patient.name }}</span>.
+      </p>
+      <p class="delete-message text-danger">
+        <i class="fas fa-exclamation-circle me-1"></i>
+        This action cannot be undone.
+      </p>
+
+      <form method="post" class="d-inline">
+        {% csrf_token %}
+        <div class="delete-actions">
+          <button type="submit" class="btn btn-delete">
+            <i class="fas fa-trash-alt"></i>
+            Delete Record
+          </button>
+          <a href="{% url 'patient_profile' record.patient.id %}" class="btn btn-cancel">
+            <i class="fas fa-times-circle"></i>
+            Cancel
+          </a>
         </div>
-      </div>
+      </form>
     </div>
   </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add slight animation to buttons
+    const buttons = document.querySelectorAll('.btn-delete, .btn-cancel');
+    buttons.forEach((button, index) => {
+      button.style.opacity = '0';
+      button.style.transform = 'translateY(10px)';
+      setTimeout(() => {
+        button.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        button.style.opacity = '1';
+        button.style.transform = 'translateY(0)';
+      }, 200 + (index * 100));
+    });
+  });
+</script>
 {% endblock %}
