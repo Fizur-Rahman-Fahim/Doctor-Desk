@@ -1,33 +1,223 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
 
 {% block content %}
-  <div class="container py-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card shadow-sm border-0">
-          <div class="card-header bg-primary text-white rounded-top">
-            <h4 class="mb-0">📝 Edit Prescription</h4>
-          </div>
-          <div class="card-body bg-light">
-            <form method="post" novalidate>
-              {% csrf_token %}
-              {% for field in form %}
-                <div class="mb-4">
-                  <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
-                  {{ field }}
-                  {% if field.errors %}
-                    <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
-                  {% endif %}
-                </div>
-              {% endfor %}
-              <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-success">💾 Update</button>
-                <a href="{% url 'patient_profile' prescription.patient.id %}" class="btn btn-secondary ms-2">Cancel</a>
+<style>
+  .prescription-edit-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .prescription-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #3b82f6;
+  }
+
+  .prescription-header {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    padding: 1.5rem;
+    color: white;
+  }
+
+  .prescription-title {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+  }
+
+  .prescription-icon {
+    font-size: 1.5rem;
+  }
+
+  .prescription-body {
+    padding: 2rem;
+    background-color: #f8fafc;
+  }
+
+  .form-group {
+    margin-bottom: 1.8rem;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .form-icon {
+    color: #3b82f6;
+    font-size: 1.1rem;
+    min-width: 20px;
+  }
+
+  .form-control {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.9rem 1.2rem;
+    transition: all 0.3s ease;
+    background-color: white;
+  }
+
+  .form-control:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  textarea.form-control {
+    min-height: 120px;
+  }
+
+  .error-message {
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .btn-update {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: none;
+    padding: 0.9rem 2.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-update:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  }
+
+  .btn-cancel {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    padding: 0.9rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-cancel:hover {
+    background-color: #f1f5f9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 768px) {
+    .prescription-body {
+      padding: 1.5rem;
+    }
+    
+    .form-actions {
+      flex-direction: column;
+    }
+    
+    .btn-update, .btn-cancel {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+
+<div class="prescription-edit-container">
+  <div class="prescription-card">
+    <div class="prescription-header">
+      <h4 class="prescription-title">
+        <i class="fas fa-prescription prescription-icon"></i>
+        Edit Prescription
+      </h4>
+    </div>
+    <div class="prescription-body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        
+        {% for field in form %}
+          <div class="form-group">
+            <label for="{{ field.id_for_label }}" class="form-label">
+              <i class="fas 
+                {% if field.name == 'medication' %}fa-pills
+                {% elif field.name == 'dosage' %}fa-syringe
+                {% elif field.name == 'frequency' %}fa-clock
+                {% elif field.name == 'duration' %}fa-calendar-alt
+                {% elif field.name == 'instructions' %}fa-comment-medical
+                {% else %}fa-file-medical{% endif %} 
+                form-icon"></i>
+              {{ field.label }}
+            </label>
+            {% render_field field class="form-control" %}
+            {% if field.errors %}
+              <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ field.errors|striptags }}
               </div>
-            </form>
+            {% endif %}
           </div>
+        {% endfor %}
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-update">
+            <i class="fas fa-save"></i>
+            Update Prescription
+          </button>
+          <a href="{% url 'patient_profile' prescription.patient.id %}" class="btn btn-cancel">
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
         </div>
-      </div>
+      </form>
     </div>
   </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add animation to form elements
+    const formGroups = document.querySelectorAll('.form-group');
+    formGroups.forEach((group, index) => {
+      group.style.opacity = '0';
+      group.style.transform = 'translateY(10px)';
+      setTimeout(() => {
+        group.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        group.style.opacity = '1';
+        group.style.transform = 'translateY(0)';
+      }, 100 + (index * 100));
+    });
+  });
+</script>
 {% endblock %}
