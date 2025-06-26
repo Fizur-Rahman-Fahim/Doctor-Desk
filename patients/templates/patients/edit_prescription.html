@@ -143,11 +143,11 @@
     .prescription-body {
       padding: 1.5rem;
     }
-    
+
     .form-actions {
       flex-direction: column;
     }
-    
+
     .btn-update, .btn-cancel {
       width: 100%;
       justify-content: center;
@@ -166,17 +166,17 @@
     <div class="prescription-body">
       <form method="post" novalidate>
         {% csrf_token %}
-        
+
         {% for field in form %}
           <div class="form-group">
             <label for="{{ field.id_for_label }}" class="form-label">
-              <i class="fas 
+              <i class="fas
                 {% if field.name == 'medication' %}fa-pills
                 {% elif field.name == 'dosage' %}fa-syringe
                 {% elif field.name == 'frequency' %}fa-clock
                 {% elif field.name == 'duration' %}fa-calendar-alt
                 {% elif field.name == 'instructions' %}fa-comment-medical
-                {% else %}fa-file-medical{% endif %} 
+                {% else %}fa-file-medical{% endif %}
                 form-icon"></i>
               {{ field.label }}
             </label>
@@ -198,7 +198,7 @@
           <a href="{% url 'patient_profile' prescription.patient.id %}" class="btn btn-cancel">
             <i class="fas fa-times"></i>
             Cancel
-          </button>
+          </a>
         </div>
       </form>
     </div>
@@ -207,7 +207,6 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Add animation to form elements
     const formGroups = document.querySelectorAll('.form-group');
     formGroups.forEach((group, index) => {
       group.style.opacity = '0';
