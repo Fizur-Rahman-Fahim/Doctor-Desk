@@ -1,16 +1,139 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <div class="card p-4 shadow-sm">
-    <h3 class="text-danger">⚠️ Confirm Deletion</h3>
-    <p>
-      Are you sure you want to delete the patient <strong>{{ patient.name }}</strong>?
-    </p>
+<style>
+  .delete-container {
+    max-width: 500px;
+    margin: 40px auto;
+    animation: fadeIn 0.4s ease-out;
+  }
 
-    <form method="post">
-      {% csrf_token %}
-      <a href="{% url 'patient_list' %}" class="btn btn-secondary">Cancel</a>
-      <button type="submit" class="btn btn-danger">Yes, Delete</button>
-    </form>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .delete-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid #ef4444;
+  }
+
+  .delete-header {
+    background-color: #fef2f2;
+    padding: 25px;
+    border-bottom: 1px solid #fee2e2;
+  }
+
+  .delete-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    color: #ef4444;
+    margin: 0;
+  }
+
+  .delete-body {
+    padding: 25px;
+  }
+
+  .delete-message {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #4b5563;
+  }
+
+  .delete-patient-name {
+    color: #111827;
+    font-weight: 600;
+  }
+
+  .delete-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+  }
+
+  .btn-delete {
+    background-color: #ef4444;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .btn-delete:hover {
+    background-color: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+  }
+
+  .btn-cancel {
+    background-color: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    color: #4b5563;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .btn-cancel:hover {
+    background-color: #e5e7eb;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+</style>
+
+<div class="delete-container">
+  <div class="delete-card">
+    <div class="delete-header">
+      <h3 class="delete-title">
+        <i class="fas fa-exclamation-triangle"></i>
+        Confirm Deletion
+      </h3>
+    </div>
+    <div class="delete-body">
+      <p class="delete-message">
+        You are about to permanently delete patient
+        <span class="delete-patient-name">{{ patient.name }}</span>
+        and all associated records. This action cannot be undone.
+      </p>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="delete-actions">
+          <a href="{% url 'patient_list' %}" class="btn btn-cancel">
+            <i class="fas fa-times-circle me-2"></i>
+            Cancel
+          </a>
+          <button type="submit" class="btn btn-delete">
+            <i class="fas fa-trash-alt me-2"></i>
+            Delete Patient
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add slight animation to buttons
+    const buttons = document.querySelectorAll('.btn-cancel, .btn-delete');
+    buttons.forEach(button => {
+      button.style.transform = 'translateY(5px)';
+      button.style.opacity = '0';
+      setTimeout(() => {
+        button.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        button.style.opacity = '1';
+        button.style.transform = 'translateY(0)';
+      }, 200);
+    });
+  });
+</script>
 {% endblock %}
