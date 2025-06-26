@@ -1,96 +1,391 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-  <div class="container mt-5">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 class="fw-bold text-primary">👨‍⚕️ Welcome, Dr. {{ user.get_full_name }}</h2>
-      <div>
-        <a href="{% url 'doctor_profile' %}" class="btn btn-outline-primary me-2">👤 My Profile</a>
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-        <a href="{% url 'add_patient' %}" class="btn btn-success">➕ Add Patient</a>
-      </div>
+<style>
+  :root {
+    --primary: #2563eb;
+    --primary-light: #dbeafe;
+    --primary-dark: #1d4ed8;
+    --secondary: #0ea5e9;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --light: #f8fafc;
+    --dark: #0f172a;
+    --gray: #64748b;
+    --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --transition: all 0.3s ease;
+  }
+
+  body {
+    background-color: #f8fafc;
+    font-family: 'Poppins', sans-serif;
+    background-image: radial-gradient(circle at top left, #f0f4ff 5%, transparent 20%),
+                      radial-gradient(circle at bottom right, #e0f7fa 5%, transparent 20%);
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    background: linear-gradient(-45deg, var(--primary), var(--secondary), #14b8a6, var(--primary-dark));
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    padding: 25px 30px;
+    border-radius: 18px;
+    color: white;
+    box-shadow: var(--card-shadow);
+  }
+
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .welcome-section h1 {
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  .welcome-section p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 0;
+  }
+
+  .header-actions .btn {
+    margin-left: 12px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 50px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: var(--transition);
+  }
+
+  .header-actions .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn-profile {
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+  }
+
+  .btn-add-patient {
+    background-color: white;
+    color: var(--primary);
+  }
+
+  .btn-add-patient:hover {
+    background-color: #f0f7ff;
+  }
+
+  .search-section {
+    background-color: white;
+    padding: 25px;
+    border-radius: 18px;
+    margin-bottom: 30px;
+    box-shadow: var(--card-shadow);
+  }
+
+  .search-container {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .search-container input {
+    padding: 14px 20px 14px 50px;
+    border-radius: 50px;
+    border: 2px solid #e2e8f0;
+    font-size: 1.05rem;
+    transition: var(--transition);
+  }
+
+  .search-container input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray);
+    font-size: 1.2rem;
+  }
+
+  .dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+  }
+
+  .stat-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12), 0 0 15px rgba(37, 99, 235, 0.08);
+  }
+
+  .stat-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    font-size: 28px;
+  }
+
+  .stat-content h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--dark);
+  }
+
+  .stat-content p {
+    color: var(--gray);
+    margin-bottom: 0;
+  }
+
+  .card-patients .stat-icon { background-color: rgba(37, 99, 235, 0.1); color: var(--primary); }
+  .card-prescriptions .stat-icon { background-color: rgba(16, 185, 129, 0.1); color: var(--success); }
+  .card-reports .stat-icon { background-color: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+  .patients-section {
+    background-color: white;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 30px;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    background-color: var(--primary);
+    color: white;
+  }
+
+  .section-header h2,
+  .section-header a {
+    color: white !important;
+  }
+
+
+  .patient-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 1px solid #f1f5f9;
+    transition: var(--transition);
+  }
+
+  .patient-item:hover {
+    background: linear-gradient(90deg, #f8fafc, #eef2ff);
+  }
+
+  .patient-info h4 { font-size: 1.2rem; font-weight: 600; margin-bottom: 5px; color: var(--dark); }
+
+  .patient-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+
+  .patient-meta span {
+    font-size: 0.95rem;
+    color: var(--gray);
+    display: flex;
+    align-items: center;
+  }
+
+  .patient-actions { display: flex; gap: 12px; }
+
+  .action-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+  }
+
+  .btn-profile-action { background-color: rgba(37, 99, 235, 0.1); color: var(--primary); }
+  .btn-edit-action { background-color: rgba(245, 158, 11, 0.1); color: var(--warning); }
+  .btn-delete-action { background-color: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+  .action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .empty-state {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--gray);
+  }
+
+  .empty-state i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    opacity: 0.3;
+  }
+
+  .floating-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    border-radius: 50px;
+    padding: 12px 18px;
+    display: none;
+  }
+
+  @media (max-width: 992px) {
+    .dashboard-header { flex-direction: column; text-align: center; gap: 20px; }
+    .header-actions { flex-wrap: wrap; justify-content: center; gap: 10px; }
+    .header-actions .btn { margin: 0; }
+    .patient-item { flex-direction: column; align-items: flex-start; gap: 15px; }
+    .patient-actions { align-self: flex-end; }
+    .floating-btn { display: inline-flex; }
+  }
+
+  @media (max-width: 768px) {
+    .patient-meta { flex-direction: column; gap: 8px; }
+  }
+</style>
+
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="welcome-section">
+      <h1>Welcome, Dr. {{ user.get_full_name }}</h1>
+      <p>Your dashboard for managing patient care efficiently</p>
     </div>
-
-    <!-- Search -->
-    <form method="get" action="{% url 'patient_search' %}" class="input-group mb-4">
-      <input type="text" name="q" class="form-control" placeholder="🔍 Search Patients..." value="{{ request.GET.q }}" />
-      <button class="btn btn-outline-secondary" type="submit">Search</button>
-    </form>
-
-    <!-- Patients Card -->
-    <div class="card shadow-sm mb-4 border-0">
-      <div class="card-header bg-info text-white d-flex justify-content-between">
-        <h5 class="mb-0">🧑‍🤝‍🧑 Patient List</h5>
-        <a href="{% url 'patient_list' %}" class="btn btn-light btn-sm">View All</a>
-      </div>
-      <ul class="list-group list-group-flush">
-        {% for patient in patients %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div>
-              <strong>{{ patient.name }}</strong> (Age: {{ patient.age }})<br />
-              <small class="text-muted">{{ patient.phone }}</small>
-            </div>
-            <div>
-              <a href="{% url 'patient_profile' patient.id %}" class="btn btn-sm btn-outline-primary me-2">Profile</a>
-              <a href="{% url 'patient_detail' patient.id %}" class="btn btn-sm btn-outline-warning me-2">Edit</a>
-              <a href="{% url 'delete_patient' patient.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this patient?')">Delete</a>
-            </div>
-          </li>
-        {% empty %}
-          <li class="list-group-item text-muted">No patients available.</li>
-        {% endfor %}
-      </ul>
+    <div class="header-actions">
+      <a href="{% url 'doctor_profile' %}" class="btn btn-profile"><i class="fas fa-user me-2"></i>My Profile</a>
+      <a href="{% url 'add_patient' %}" class="btn btn-add-patient"><i class="fas fa-user-plus me-2"></i>Add Patient</a>
     </div>
-
-    {% comment %} <!-- Prescriptions Card -->
-    <div class="card shadow-sm mb-4 border-0">
-      <div class="card-header bg-success text-white d-flex justify-content-between">
-        <h5 class="mb-0">💊 Recent Prescriptions</h5>
-        <a href="{% url 'upload_prescription' patient.id %}" class="btn btn-light btn-sm">➕ Add Prescription</a>
-      </div>
-      <ul class="list-group list-group-flush">
-        {% for pres in prescriptions %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div>
-              <strong>{{ pres.patient.name }}</strong><br />
-              <small class="text-muted">{{ pres.created_at|date:'d M, Y - h:i A' }}</small>
-            </div>
-            <div>
-              <a href="{% url 'prescription_list' pres.patient.id %}" class="btn btn-sm btn-outline-success me-2">View All</a>
-              <a href="{% url 'edit_prescription' pres.id %}" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
-              <a href="{% url 'delete_prescription' pres.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this prescription?')">Delete</a>
-            </div>
-          </li>
-        {% empty %}
-          <li class="list-group-item text-muted">No prescriptions found.</li>
-        {% endfor %}
-      </ul>
-    </div> {% endcomment %}
-
-    <!-- Reports Card -->
-    {% comment %} <div class="card shadow-sm mb-5 border-0">
-      <div class="card-header bg-dark text-white d-flex justify-content-between">
-        <h5 class="mb-0">📄 Recent Reports</h5>
-        <a href="{% url 'upload_report' %}" class="btn btn-light btn-sm">➕ Upload Report</a>
-      </div>
-      <ul class="list-group list-group-flush">
-        {% for report in reports %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div>
-              <strong>{{ report.patient.name }}</strong><br />
-              <small class="text-muted">{{ report.created_at|date:'d M, Y - h:i A' }}</small>
-            </div>
-            <div>
-              <a href="{% url 'report_list' report.patient.id %}" class="btn btn-sm btn-outline-success me-2">View All</a>
-              <a href="{% url 'edit_report' report.id %}" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
-              <a href="{% url 'delete_report' report.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this report?')">Delete</a>
-            </div>
-          </li>
-        {% empty %}
-          <li class="list-group-item text-muted">No reports uploaded.</li>
-        {% endfor %}
-      </ul>
-    </div> {% endcomment %}
   </div>
+
+  <!-- Search -->
+  <div class="search-section">
+    <div class="search-container">
+      <i class="fas fa-search search-icon"></i>
+      <form method="get" action="{% url 'patient_search' %}">
+        <input type="text" name="q" class="form-control"
+               placeholder="Search patients by name, phone, or condition..." value="{{ request.GET.q }}">
+      </form>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="dashboard-cards">
+    <div class="stat-card card-patients">
+      <div class="stat-icon"><i class="fas fa-user-injured"></i></div>
+      <div class="stat-content"><h3>{{ patients.count }}</h3><p>Total Patients</p></div>
+    </div>
+    <div class="stat-card card-prescriptions">
+      <div class="stat-icon"><i class="fas fa-file-prescription"></i></div>
+      <div class="stat-content"><h3>{{ prescriptions.count }}</h3><p>Active Prescriptions</p></div>
+    </div>
+  </div>
+
+  <!-- Patient List -->
+  <div class="patients-section">
+    <div class="section-header">
+      <h2><i class="fas fa-users me-2"></i>Patient List</h2>
+      <a href="{% url 'patient_list' %}" class="view-all-btn"><i class=""></i>View All</a>
+    </div>
+
+    {% if patients %}
+    <ul class="patient-list">
+      {% for patient in patients %}
+      <li class="patient-item">
+        <div class="patient-info">
+          <h4>{{ patient.name }}</h4>
+          <div class="patient-meta">
+            <span><i class="fas fa-user me-1"></i>Age: {{ patient.age }}</span>
+            <span><i class="fas fa-phone me-1"></i>{{ patient.phone }}</span>
+          </div>
+        </div>
+        <div class="patient-actions">
+          <a href="{% url 'patient_profile' patient.id %}" class="action-btn btn-profile-action" title="View Profile"><i class="fas fa-user"></i></a>
+          <a href="{% url 'patient_detail' patient.id %}" class="action-btn btn-edit-action" title="Edit Patient"><i class="fas fa-edit"></i></a>
+          <a href="{% url 'delete_patient' patient.id %}" class="action-btn btn-delete-action" title="Delete Patient"
+             onclick="return confirm('Are you sure you want to delete this patient?')"><i class="fas fa-trash"></i></a>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-user-injured"></i>
+      <p>No patients available</p>
+      <a href="{% url 'add_patient' %}" class="btn btn-primary"><i class="fas fa-user-plus me-2"></i>Add Your First Patient</a>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Floating Add Patient Button -->
+  <a href="{% url 'add_patient' %}" class="btn btn-add-patient floating-btn"><i class="fas fa-user-plus me-2"></i> Add</a>
+</div>
+
+<!-- Animations -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach((card, index) => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      setTimeout(() => {
+        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, 200 + (index * 150));
+    });
+
+    const patientItems = document.querySelectorAll('.patient-item');
+    patientItems.forEach((item, index) => {
+      item.style.opacity = '0';
+      item.style.transform = 'translateX(20px)';
+      setTimeout(() => {
+        item.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        item.style.opacity = '1';
+        item.style.transform = 'translateX(0)';
+      }, 300 + (index * 100));
+    });
+  });
+</script>
 {% endblock %}
