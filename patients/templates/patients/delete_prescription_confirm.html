@@ -19,13 +19,12 @@
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border-top: 4px solid #ef4444;
+    border-left: 4px solid #ef4444;
     background: linear-gradient(to bottom, #fff 0%, #fef2f2 100%);
   }
 
   .delete-header {
-    padding: 2rem 2rem 1rem;
-    text-align: center;
+    padding: 1.5rem 1.5rem 0;
   }
 
   .delete-title {
@@ -33,48 +32,49 @@
     color: #ef4444;
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 10px;
     margin-bottom: 1rem;
   }
 
   .delete-icon {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
   }
 
   .delete-body {
-    padding: 0 2rem 2rem;
-    text-align: center;
+    padding: 1.5rem;
   }
 
   .delete-message {
     font-size: 1.1rem;
     line-height: 1.6;
     color: #4b5563;
-    margin-bottom: 2rem;
-    padding: 0 1rem;
+    margin-bottom: 1.5rem;
   }
 
-  .warning-text {
+  .warning-alert {
     background-color: #fee2e2;
-    padding: 0.8rem;
+    padding: 1rem;
     border-radius: 8px;
     margin: 1.5rem 0;
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #b91c1c;
     font-weight: 500;
+    justify-content: center;
   }
 
   .delete-actions {
     display: flex;
     gap: 1rem;
+    margin-top: 2rem;
     justify-content: center;
-    margin-top: 1.5rem;
   }
 
   .btn-delete {
     background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     border: none;
-    padding: 0.8rem 2rem;
+    padding: 0.8rem 1.8rem;
     border-radius: 8px;
     font-weight: 600;
     color: white;
@@ -94,7 +94,7 @@
     background-color: white;
     border: 1px solid #e5e7eb;
     color: #4b5563;
-    padding: 0.8rem 2rem;
+    padding: 0.8rem 1.8rem;
     border-radius: 8px;
     font-weight: 600;
     transition: all 0.3s ease;
@@ -113,7 +113,6 @@
   @media (max-width: 576px) {
     .delete-actions {
       flex-direction: column;
-      width: 100%;
     }
 
     .btn-delete, .btn-cancel {
@@ -136,9 +135,9 @@
         You are about to permanently delete this prescription record.
       </p>
 
-      <div class="warning-text">
-        <i class="fas fa-exclamation-circle me-2"></i>
-        This action cannot be undone
+      <div class="warning-alert">
+        <i class="fas fa-exclamation-circle"></i>
+        This action cannot be undone.
       </div>
 
       <form method="post" class="d-inline">
@@ -159,8 +158,7 @@
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Add slight animation to buttons
+  document.addEventListener('DOMContentLoaded', function () {
     const buttons = document.querySelectorAll('.btn-delete, .btn-cancel');
     buttons.forEach((button, index) => {
       button.style.opacity = '0';
