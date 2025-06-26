@@ -2,51 +2,468 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
-  <h2 class="mb-4 text-center">🔍 Search Patients</h2>
+<style>
+  :root {
+    --primary: #2563eb;
+    --primary-light: #dbeafe;
+    --primary-dark: #1d4ed8;
+    --secondary: #0ea5e9;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --light: #f8fafc;
+    --dark: #0f172a;
+    --gray: #64748b;
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --transition: all 0.3s ease;
+  }
+
+  .search-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .search-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .search-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .search-subtitle {
+    font-size: 1.1rem;
+    color: var(--gray);
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .search-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 30px;
+  }
+
+  .search-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .search-input {
+    position: relative;
+    grid-column: 1 / -1;
+  }
+
+  .search-input input {
+    padding: 15px 20px 15px 50px;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    width: 100%;
+    font-size: 1.05rem;
+    transition: var(--transition);
+  }
+
+  .search-input input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    outline: none;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray);
+    font-size: 1.2rem;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .filter-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--dark);
+  }
+
+  .filter-select {
+    padding: 12px 15px;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    font-size: 1rem;
+    transition: var(--transition);
+  }
+
+  .filter-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    outline: none;
+  }
+
+  .search-btn {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+    cursor: pointer;
+  }
+
+  .search-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+  }
+
+  .reset-btn {
+    background-color: #f1f5f9;
+    color: var(--dark);
+    border: 2px solid #e2e8f0;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: var(--transition);
+  }
+
+  .reset-btn:hover {
+    background-color: #e2e8f0;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .results-container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+  }
+
+  .results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    background-color: var(--primary);
+    color: white;
+  }
+
+  .results-count {
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .patient-list {
+    padding: 0;
+    margin: 0;
+  }
+
+  .patient-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    border-bottom: 1px solid #f1f5f9;
+    transition: var(--transition);
+  }
+
+  .patient-item:hover {
+    background-color: #f8fafc;
+  }
+
+  .patient-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .patient-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+  }
+
+  .patient-details h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--dark);
+  }
+
+  .patient-meta {
+    display: flex;
+    gap: 20px;
+  }
+
+  .patient-meta span {
+    font-size: 0.95rem;
+    color: var(--gray);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .view-btn {
+    background-color: rgba(37, 99, 235, 0.1);
+    color: var(--primary);
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition);
+  }
+
+  .view-btn:hover {
+    background-color: rgba(37, 99, 235, 0.2);
+    transform: translateY(-3px);
+  }
+
+  .empty-state {
+    padding: 60px 30px;
+    text-align: center;
+  }
+
+  .empty-icon {
+    font-size: 4rem;
+    color: #cbd5e1;
+    margin-bottom: 20px;
+  }
+
+  .empty-text {
+    font-size: 1.2rem;
+    color: var(--gray);
+    margin-bottom: 30px;
+  }
+
+  .search-tips {
+    background-color: #f8fafc;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 30px;
+  }
+
+  .tips-title {
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tips-list {
+    padding-left: 20px;
+    color: var(--gray);
+  }
+
+  .tips-list li {
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 768px) {
+    .search-form {
+      grid-template-columns: 1fr;
+    }
+
+    .patient-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    .patient-meta {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .view-btn {
+      align-self: flex-end;
+    }
+  }
+</style>
+
+<div class="search-container">
+  <!-- Search Header -->
+  <div class="search-header">
+    <h1 class="search-title">
+      <i class="fas fa-search"></i>
+      Patient Search
+    </h1>
+    <p class="search-subtitle">
+      Find patients by name, contact information, or other details
+    </p>
+  </div>
 
   <!-- Search Form -->
-  <form method="GET" action="{% url 'patient_search' %}" class="row g-3 justify-content-center mb-4">
-    <div class="col-md-6">
-      <input 
-        type="text" 
-        name="q" 
-        class="form-control" 
-        placeholder="Search by name, phone, email, address, occupation" 
-        value="{{ query }}">
-    </div>
-    
-    <div class="col-md-3">
-      <select name="gender" class="form-select">
-        <option value="">All Genders</option>
-        <option value="male" {% if gender == 'male' %}selected{% endif %}>Male</option>
-        <option value="female" {% if gender == 'female' %}selected{% endif %}>Female</option>
-        <option value="other" {% if gender == 'other' %}selected{% endif %}>Other</option>
-      </select>
-    </div>
-    
-    <div class="col-md-2">
-      <button type="submit" class="btn btn-primary w-100">
-        <i class="fas fa-search me-1"></i> Search
-      </button>
-    </div>
-  </form>
+  <div class="search-card">
+    <form method="GET" action="{% url 'patient_search' %}">
+      <div class="search-form">
+        <div class="search-input">
+          <i class="fas fa-search search-icon"></i>
+          <input
+            type="text"
+            name="q"
+            placeholder="Search by name, phone, email, address, or occupation"
+            value="{{ query }}">
+        </div>
 
-  <hr>
+        <div class="filter-group">
+          <label class="filter-label">Gender</label>
+          <select name="gender" class="filter-select">
+            <option value="">All Genders</option>
+            <option value="male" {% if gender == 'male' %}selected{% endif %}>Male</option>
+            <option value="female" {% if gender == 'female' %}selected{% endif %}>Female</option>
+            <option value="other" {% if gender == 'other' %}selected{% endif %}>Other</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Age Range</label>
+          <select name="age_range" class="filter-select">
+            <option value="">Any Age</option>
+            <option value="0-18" {% if age_range == '0-18' %}selected{% endif %}>0-18 years</option>
+            <option value="19-40" {% if age_range == '19-40' %}selected{% endif %}>19-40 years</option>
+            <option value="41-65" {% if age_range == '41-65' %}selected{% endif %}>41-65 years</option>
+            <option value="65+" {% if age_range == '65+' %}selected{% endif %}>65+ years</option>
+          </select>
+        </div>
+
+        <button type="submit" class="search-btn">
+          <i class="fas fa-search"></i>
+          Search
+        </button>
+
+        <a href="{% url 'patient_search' %}" class="reset-btn">
+          <i class="fas fa-redo"></i>
+          Reset
+        </a>
+      </div>
+    </form>
+  </div>
 
   <!-- Search Results -->
   {% if patients %}
-    <div class="list-group">
-      {% for patient in patients %}
-        <a href="{% url 'patient_detail' patient.id %}" class="list-group-item list-group-item-action">
-          <strong>{{ patient.name }}</strong> &mdash; {{ patient.phone }}
-        </a>
-      {% endfor %}
+    <div class="results-container">
+      <div class="results-header">
+        <div class="results-count">
+          <i class="fas fa-users"></i>
+          {{ patients.count }} patient{{ patients.count|pluralize }} found
+        </div>
+      </div>
+
+      <ul class="patient-list">
+        {% for patient in patients %}
+          <li class="patient-item">
+            <div class="patient-info">
+              <div class="patient-avatar">
+                {% if patient.gender == 'male' %}
+                  <i class="fas fa-mars"></i>
+                {% elif patient.gender == 'female' %}
+                  <i class="fas fa-venus"></i>
+                {% else %}
+                  <i class="fas fa-user"></i>
+                {% endif %}
+              </div>
+
+              <div class="patient-details">
+                <h4>{{ patient.name }}</h4>
+                <div class="patient-meta">
+                  <span>
+                    <i class="fas fa-birthday-cake"></i>
+                    {{ patient.age }} years
+                  </span>
+                  <span>
+                    <i class="fas fa-phone"></i>
+                    {{ patient.phone }}
+                  </span>
+                  <span>
+                    <i class="fas fa-envelope"></i>
+                    {{ patient.email|default:"No email" }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <a href="{% url 'patient_detail' patient.id %}" class="view-btn">
+              <i class="fas fa-eye"></i>
+              View Profile
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
     </div>
   {% else %}
-    <div class="alert alert-warning text-center" role="alert">
-      No patients found.
+    <div class="results-container">
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fas fa-user-injured"></i>
+        </div>
+        <h3>No Patients Found</h3>
+        <p class="empty-text">
+          {% if query %}
+            No patients match your search criteria. Try different keywords or filters.
+          {% else %}
+            No patients found in the system. You can add a new patient using the button below.
+          {% endif %}
+        </p>
+        <a href="{% url 'add_patient' %}" class="search-btn" style="display: inline-flex; width: auto;">
+          <i class="fas fa-user-plus"></i>
+          Add New Patient
+        </a>
+      </div>
     </div>
   {% endif %}
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add animation to patient items
+    const patientItems = document.querySelectorAll('.patient-item');
+    patientItems.forEach((item, index) => {
+      item.style.opacity = '0';
+      item.style.transform = 'translateY(20px)';
+      setTimeout(() => {
+        item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        item.style.opacity = '1';
+        item.style.transform = 'translateY(0)';
+      }, 100 + (index * 100));
+    });
+  });
+</script>
 {% endblock %}
