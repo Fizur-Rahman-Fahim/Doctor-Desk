@@ -1,100 +1,345 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-  <style>
+<style>
+  :root {
+    --primary: #1a73e8;
+    --primary-light: #e8f0fe;
+    --primary-dark: #0d47a1;
+    --accent: #00bcd4;
+    --text-dark: #2d3748;
+    --text-light: #718096;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
+    color: white;
+    padding: 120px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 60px;
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: white;
+    transform: skewY(-3deg);
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .hero h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    line-height: 1.2;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .hero p {
+    font-size: 1.3rem;
+    opacity: 0.9;
+    margin-bottom: 30px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  .btn-hero {
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    transition: var(--transition);
+    margin: 0 10px;
+  }
+
+  .btn-primary {
+    background-color: var(--primary);
+    border: none;
+    box-shadow: 0 4px 15px rgba(26, 115, 232, 0.3);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26, 115, 232, 0.4);
+  }
+
+  .btn-outline-light {
+    border: 2px solid white;
+  }
+
+  .btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .features {
+    padding: 80px 20px;
+    text-align: center;
+    position: relative;
+  }
+
+  .section-title {
+    font-weight: 700;
+    font-size: 2.5rem;
+    margin-bottom: 60px;
+    color: var(--text-dark);
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title::after {
+    content: "";
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+    border-radius: 2px;
+  }
+
+  .feature-box {
+    padding: 40px 30px;
+    border-radius: 15px;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+    background-color: white;
+    height: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-box::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+  }
+
+  .feature-box:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .feature-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+    font-size: 1.8rem;
+    color: white;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .feature-box h5 {
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--text-dark);
+    font-size: 1.3rem;
+  }
+
+  .feature-box p {
+    color: var(--text-light);
+    font-size: 1rem;
+  }
+
+  .cta-section {
+    padding: 80px 20px;
+    text-align: center;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    color: white;
+    border-radius: 15px;
+    margin: 80px auto;
+    max-width: 1200px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    transform: rotate(30deg);
+    animation: shine 8s infinite linear;
+  }
+
+  @keyframes shine {
+    0% { transform: rotate(30deg) translateX(-100%); }
+    100% { transform: rotate(30deg) translateX(100%); }
+  }
+
+  .cta-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .cta-section h3 {
+    font-weight: 700;
+    font-size: 2.2rem;
+    margin-bottom: 20px;
+  }
+
+  .cta-section p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 30px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .btn-cta {
+    background-color: white;
+    color: var(--primary);
+    padding: 14px 40px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: var(--transition);
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-cta:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    color: var(--primary-dark);
+  }
+
+  @media (max-width: 768px) {
     .hero {
-      background: linear-gradient(to right, #4facfe, #00f2fe);
-      color: white;
       padding: 80px 20px;
-      text-align: center;
-      border-radius: 0 0 40px 40px;
     }
-    
+
     .hero h1 {
-      font-size: 3rem;
-      font-weight: 700;
+      font-size: 2.5rem;
     }
-    
+
     .hero p {
-      font-size: 1.2rem;
-      margin-top: 10px;
-      opacity: 0.9;
+      font-size: 1.1rem;
     }
-    
-    .features {
-      padding: 60px 20px;
-      text-align: center;
-    }
-    
-    .features h2 {
-      font-weight: bold;
-      margin-bottom: 40px;
-    }
-    
-    .feature-box {
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      transition: 0.3s ease;
-      background-color: #f8f9fa;
-    }
-    
-    .feature-box:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-    }
-    
-    .cta-section {
-      padding: 60px 20px;
-      text-align: center;
-      background-color: #e3f2fd;
-      border-radius: 30px;
-      margin: 40px 0;
-    }
-  </style>
 
-  <div class="hero">
-    <h1>Welcome to DoctorDesk</h1>
-    <p>Your intelligent system for managing patients, prescriptions, reports, and more.</p>
-    <div class="mt-4">
-      <a href="{% url 'doctor_login' %}" class="btn btn-light btn-lg me-3">Doctor Login</a>
-      <a href="{% url 'doctor_register' %}" class="btn btn-outline-light btn-lg">Register</a>
-    </div>
+    .btn-hero {
+      display: block;
+      width: 80%;
+      margin: 10px auto;
+    }
+  }
+</style>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>Revolutionize Your Medical Practice</h1>
+    <p>DoctorDesk provides intelligent solutions for patient management, prescriptions, and medical reporting</p>
   </div>
+</div>
 
-  <div class="features container">
-    <h2>Key Features</h2>
-    <div class="row g-4 mt-4">
-      <div class="col-md-6 col-lg-3">
-        <div class="feature-box">
-          <h5>Patient Management</h5>
-          <p>Add, update, and track patient details with ease.</p>
+<div class="features container">
+  <h2 class="section-title">Key Features</h2>
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-3">
+      <div class="feature-box">
+        <div class="feature-icon">
+          <i class="fas fa-user-injured"></i>
         </div>
+        <h5>Patient Management</h5>
+        <p>Comprehensive patient profiles with medical history, appointments, and treatment tracking.</p>
       </div>
-      <div class="col-md-6 col-lg-3">
-        <div class="feature-box">
-          <h5>Prescription History</h5>
-          <p>Maintain complete digital records of doctor prescriptions.</p>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="feature-box">
+        <div class="feature-icon">
+          <i class="fas fa-prescription-bottle-alt"></i>
         </div>
+        <h5>e-Prescriptions</h5>
+        <p>Digital prescriptions with medication history and automated refill reminders.</p>
       </div>
-      <div class="col-md-6 col-lg-3">
-        <div class="feature-box">
-          <h5>Medical Reports</h5>
-          <p>Securely upload and access medical records anytime.</p>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="feature-box">
+        <div class="feature-icon">
+          <i class="fas fa-file-medical"></i>
         </div>
+        <h5>Medical Reports</h5>
+        <p>Secure cloud storage for test results, imaging reports, and medical documents.</p>
       </div>
-      <div class="col-md-6 col-lg-3">
-        <div class="feature-box">
-          <h5>Doctor Dashboard</h5>
-          <p>View assigned patients and prescription activity at a glance.</p>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="feature-box">
+        <div class="feature-icon">
+          <i class="fas fa-chart-line"></i>
         </div>
+        <h5>Analytics Dashboard</h5>
+        <p>Real-time practice analytics and patient statistics for better decision making.</p>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="cta-section container">
-    <h3>Ready to streamline your medical management?</h3>
-    <p class="mb-4">Join DoctorDesk today and experience seamless healthcare record keeping.</p>
-    <a href="{% url 'doctor_register' %}" class="btn btn-primary btn-lg">Get Started</a>
+<div class="container">
+  <div class="cta-section">
+    <div class="cta-content">
+      <h3>Ready to Transform Your Practice?</h3>
+      <p>Join thousands of medical professionals using DoctorDesk to streamline their workflow and enhance patient care.</p>
+      <a href="{% url 'doctor_register' %}" class="btn btn-cta">Get Started Free</a>
+    </div>
   </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Animate feature boxes on scroll
+    const featureBoxes = document.querySelectorAll('.feature-box');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }, index * 100);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    featureBoxes.forEach(box => {
+      box.style.opacity = '0';
+      box.style.transform = 'translateY(20px)';
+      box.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(box);
+    });
+  });
+</script>
 {% endblock %}
