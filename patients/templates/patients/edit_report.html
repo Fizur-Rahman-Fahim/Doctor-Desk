@@ -1,35 +1,269 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load widget_tweaks %}
 
 {% block content %}
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card shadow-lg border-0">
-          <div class="card-header bg-primary text-white">
-            <h4 class="mb-0"><i class="fas fa-edit"></i> Edit Medical Report</h4>
+<style>
+  .report-edit-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .report-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #3b82f6;
+  }
+
+  .report-header {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    padding: 1.5rem;
+    color: white;
+  }
+
+  .report-title {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+  }
+
+  .report-icon {
+    font-size: 1.5rem;
+  }
+
+  .report-body {
+    padding: 2rem;
+    background-color: #f8fafc;
+  }
+
+  .form-group {
+    margin-bottom: 1.8rem;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .form-icon {
+    color: #3b82f6;
+    font-size: 1.1rem;
+    min-width: 20px;
+  }
+
+  .form-control {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.9rem 1.2rem;
+    transition: all 0.3s ease;
+    background-color: white;
+  }
+
+  .form-control:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .file-input-wrapper {
+    position: relative;
+  }
+
+  .file-input-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.8rem 1rem;
+    background-color: #f1f5f9;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .file-input-label:hover {
+    background-color: #e2e8f0;
+  }
+
+  .file-input {
+    position: absolute;
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+    overflow: hidden;
+  }
+
+  .file-name {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #64748b;
+  }
+
+  .help-text {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .btn-update {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: none;
+    padding: 0.9rem 2.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-update:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  }
+
+  .btn-cancel {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    padding: 0.9rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-cancel:hover {
+    background-color: #f1f5f9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 768px) {
+    .report-body {
+      padding: 1.5rem;
+    }
+
+    .form-actions {
+      flex-direction: column;
+    }
+
+    .btn-update, .btn-cancel {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+
+<div class="report-edit-container">
+  <div class="report-card">
+    <div class="report-header">
+      <h4 class="report-title">
+        <i class="fas fa-file-medical report-icon"></i>
+        Edit Medical Report
+      </h4>
+    </div>
+    <div class="report-body">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="{{ form.title.id_for_label }}" class="form-label">
+            <i class="fas fa-heading form-icon"></i>
+            Report Title
+          </label>
+          {% render_field form.title class="form-control" %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <i class="fas fa-file-upload form-icon"></i>
+            Replace File
+          </label>
+          <div class="file-input-wrapper">
+            <label for="{{ form.file.id_for_label }}" class="file-input-label">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <span id="file-label-text">Choose a file...</span>
+            </label>
+            {% render_field form.file class="file-input" id=form.file.id_for_label %}
           </div>
-          <div class="card-body bg-light">
-            <form method="post" enctype="multipart/form-data">
-              {% csrf_token %}
-              <!-- Render fields with better styling -->
-              <div class="mb-3">
-                <label for="title" class="form-label"><i class="fas fa-heading"></i> Report Title</label>
-                {{ form.title|add_class:'form-control bg-white' }}
-              </div>
-
-              <div class="mb-3">
-                <label for="file" class="form-label"><i class="fas fa-file-upload"></i> Replace File</label>
-                {{ form.file|add_class:'form-control bg-white' }}
-                <small class="form-text text-muted">Leave empty to keep existing file.</small>
-              </div>
-
-              <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Update Report</button>
-              <a href="{% url 'patient_profile' report.patient.id %}" class="btn btn-secondary"><i class="fas fa-times-circle"></i> Cancel</a>
-            </form>
+          <div class="help-text">
+            <i class="fas fa-info-circle"></i>
+            Leave empty to keep existing file (Current: {{ report.file.name|default:"No file" }})
           </div>
         </div>
-      </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-update">
+            <i class="fas fa-save"></i>
+            Update Report
+          </button>
+          <a href="{% url 'patient_profile' report.patient.id %}" class="btn btn-cancel">
+            <i class="fas fa-times-circle"></i>
+            Cancel
+          </a>
+        </div>
+      </form>
     </div>
   </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add animation to form elements
+    const formGroups = document.querySelectorAll('.form-group');
+    formGroups.forEach((group, index) => {
+      group.style.opacity = '0';
+      group.style.transform = 'translateY(10px)';
+      setTimeout(() => {
+        group.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        group.style.opacity = '1';
+        group.style.transform = 'translateY(0)';
+      }, 100 + (index * 100));
+    });
+
+    // File input display
+    const fileInput = document.getElementById('{{ form.file.id_for_label }}');
+    const fileLabelText = document.getElementById('file-label-text');
+
+    if (fileInput) {
+      fileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+          fileLabelText.textContent = this.files[0].name;
+        } else {
+          fileLabelText.textContent = 'Choose a file...';
+        }
+      });
+    }
+  });
+</script>
 {% endblock %}
